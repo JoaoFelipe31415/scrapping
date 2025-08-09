@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 from mock_sheets import consulta_agencia
 
 app = Flask(__name__)
-
+app.config['JSON_AS_ASCII'] = False
 @app.route('/consultar-dados', methods=['GET'])
 def get_dados_planilha():
     # Pega os parâmetros da requisição HTTP (ex: /consultar-dados?planilha=MinhaPlanilha&aba=Sheet1&query=termo)
