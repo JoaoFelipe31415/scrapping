@@ -19,4 +19,8 @@ def get_dados_planilha():
         return jsonify({"error": "Não foi possível consultar a planilha."}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True,port=8080)
+    # Em produção, o Render fornecerá a porta, então usamos gunicorn ou outro servidor WSGI
+    # Para testes locais, você pode usar a linha original ou Gunicorn
+    import os
+    port = int(os.environ.get('PORT', 8080))
+    app.run(host='0.0.0.0', port=port, debug=True)
