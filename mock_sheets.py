@@ -1,9 +1,16 @@
+import os
+import json
 import gspread
 
 def consultar_planilha(nome_planilha, nome_aba,query):
     try:
         # Autentica usando as credenciais do arquivo JSON
-        gc = gspread.service_account(filename='key.json')
+        credentials_json = os.environ.get('GOOGLE_SHEETS_CREDENTIALS')
+        if not credentials_json:
+            raise Exception("Variável de ambiente 'GOOGLE_SHEETS_CREDENTIALS' não encontrada.")
+            
+        credentials_dict = json.loads(credentials_json)
+        gc = gspread.service_account_from_dict(credentials_dict)
 
         # Abre a planilha pelo nome
         planilha = gc.open(nome_planilha)
