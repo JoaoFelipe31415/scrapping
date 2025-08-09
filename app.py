@@ -1,5 +1,6 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Response
 from mock_sheets import consulta_agencia
+import json
 
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
@@ -15,6 +16,9 @@ def get_dados_planilha():
     dados = consulta_agencia(agency,bank)
 
     if dados is not None:
-        return jsonify(dados) # Retorna os dados como JSON
+            return Response(
+                json.dumps(dados, ensure_ascii=False),
+                content_type='application/json; charset=utf-8'
+            )
     else:
-        return jsonify({"error": "Não foi possível consultar a planilha."}), 500
+        return jsonify({"error": "Não foi possível consultar a planilha."}), 500    
