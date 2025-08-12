@@ -1,7 +1,6 @@
-from flask import Flask, request, jsonify
-# Importe o CORS da biblioteca
-from flask_cors import CORS
+from flask import Flask, request, jsonify, Response
 from mock_sheets import consulta_agencia
+from flask_cors import CORS
 import json
 
 app = Flask(__name__)
@@ -11,17 +10,18 @@ CORS(app)
 
 @app.route('/consultar-dados', methods=['GET'])
 def get_dados_planilha():
+    # Pega os parâmetros da requisição HTTP (ex: /consultar-dados?planilha=MinhaPlanilha&aba=Sheet1&query=termo)
     agency = request.args.get('agency')
     bank = request.args.get('bank')
-    
-    if not all([agency, bank]):
+    if not all([agency,bank]):
         return jsonify({"error": "Parâmetros 'agency' e 'bank' são obrigatórios."}), 400
 
-    dados = consulta_agencia(agency, bank)
+    dados = consulta_agencia(agency,bank)
 
     if dados is not None:
-        return jsonify(dados)
+            return Response(
+                json.dumps(dados, ensure_ascii=False),
+                content_type='application/json; charset=utf-8'
+            )
     else:
-        # A resposta abaixo é mais apropriada, usando status 404 (Not Found)
-        # para indicar que os dados específicos não foram encontrados.
-        return jsonify({"error": "Dados para a agência e banco não encontrados."}), 404
+        return jsonify({"error": "Não foi possível consultar a planilha."}), 500    
